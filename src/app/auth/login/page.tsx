@@ -6,8 +6,12 @@ import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/auth-store';
 import { authService } from '@/services/auth-service';
 import { loginSchema } from '@/lib/schemas/auth-schema';
+import Button from '@/components/ui/button';
+import { useState } from 'react';
 
 export default function LoginPage() {
+    const [isLoading, setIsLoading] = useState(false);
+
     const router = useRouter();
     const loginAction = useAuthStore((state) => state.login);
 
@@ -38,16 +42,56 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-4">Entrar</h1>
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4 max-w-md">
-                <input type="email" name="email" placeholder="E-mail" required className="p-2 border rounded" />
-                <input type="password" name="password" placeholder="Senha" required className="p-2 border rounded" />
-
-                <button type="submit" className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700">
-                    Entrar
-                </button>
-            </form>
+        <div className="flex-1 w-full flex flex-col bg-[#F2F3F4]">
+            <div className="container flex-1 h-full flex items-center justify-center">
+                <div className='bg-white border border-gray-200 rounded-lg shadow p-4 flex flex-col gap-y-4 min-w-[380px]'>
+                    <span className="font-bold text-blue-primary">
+                        Login
+                    </span>
+                    <form onSubmit={handleSubmit} className="flex flex-col gap-4 max-w-md">
+                        <div className="flex flex-col w-full">
+                            <label
+                                htmlFor="email"
+                                className="mb-1 text-xs  font-medium text-blue-secondary"
+                            >
+                                Email
+                            </label>
+                            <input
+                                id="email"
+                                type="email" name="email" placeholder="E-mail" required
+                                className="p-2 rounded bg-[#F2F3F4] text-gray-primary"
+                            />
+                        </div>
+                        <div className="flex flex-col w-full">
+                            <label
+                                htmlFor="password"
+                                className="mb-1 text-xs font-medium text-blue-secondary"
+                            >
+                                Senha
+                            </label>
+                            <input
+                                id="password"
+                                type="password" name="password" placeholder="Senha (mín. 8 caracteres)" required
+                                className="p-2 rounded bg-[#F2F3F4] text-gray-primary"
+                            />
+                        </div>
+                        <Button type="submit" variant="secondary" fullWidth isLoading={isLoading}>
+                            Registrar
+                        </Button>
+                    </form>
+                </div>
+            </div>
         </div>
+        // <div className="container mx-auto p-4">
+        //     <h1 className="text-2xl font-bold mb-4">Entrar</h1>
+        //     <form onSubmit={handleSubmit} className="flex flex-col gap-4 max-w-md">
+        //         <input type="email" name="email" placeholder="E-mail" required className="p-2 border rounded" />
+        //         <input type="password" name="password" placeholder="Senha" required className="p-2 border rounded" />
+
+        //         <button type="submit" className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700">
+        //             Entrar
+        //         </button>
+        //     </form>
+        // </div>
     );
 }
