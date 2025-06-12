@@ -1,8 +1,7 @@
-export default function AccountOverviewPage() {
+export default function AccountPage() {
     return (
         <div>
-            <h1 className="text-3xl font-bold">Visão Geral</h1>
-            <p className="mt-4">Aqui você pode ver um resumo das suas atividades recentes.</p>
+            Minha Conta
         </div>
     )
 }
