@@ -149,7 +149,7 @@ export default function RegisterPage() {
                             Registrar
                         </Button>
 
-                        <span className='text-center text-xs text-gray-secondary'>ou se inscreva-se com</span>
+                        <span className='text-center text-xs text-gray-secondary'>acessar com minhas redes sociais</span>
 
                         {/* 4. Botões de social login substituídos */}
                         <div className='flex items-center gap-x-4 w-full'>

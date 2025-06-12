@@ -6,12 +6,19 @@ import UserIcon from "@/icons/user-icon";
 import HeartIcon from "@/icons/heart-icon";
 import CartIcon from "@/icons/cart-icon";
 import logo from "../../../../public/assets/logo/logo-bcommerce.png";
+import HamburgerOpenIcon from "@/icons/hamburger-open-icon";
+import HamburgerCloseIcon from "@/icons/hamburger-close-icon";
+import Navbar from "./navbar";
+import { useAuthStore } from "@/store/auth-store";
+import router from "next/router";
 
 
 const Header = () => {
     const [menuOpened, setMenuOpened] = useState(false);
     const [hasShadow, setHasShadow] = useState(false);
     const getCartCount = 1;
+    const { token, user } = useAuthStore();
+
 
     useEffect(() => {
         const handleScroll = () => {
@@ -21,6 +28,15 @@ const Header = () => {
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
+
+    const handleProfileClick = () => {
+        // Verifica se o usuário está autenticado
+        if (token && user) {
+            router.push("/account");
+        } else {
+            router.push("/auth/login");
+        }
+    };
 
     const toggleMenu = () => setMenuOpened((prev) => !prev);
     return (
@@ -40,25 +56,25 @@ const Header = () => {
                     />
                 </Link>
 
-                {/* Menu */}
+
                 <div className="flex-1">
-                    <nav>
-                        home
-                    </nav>
+                    <Navbar
+                        containerStyles={`${menuOpened
+                            ? "xl:hidden flex items-start flex-col gap-x-8 fixed top-16 right-6 py-5 px-5 bg-white rounded-xl shadow-md w-52 ring-1 ring-slate-900/5 z-50"
+                            : "hidden xl:flex items-center justify-around gap-x-5 xl:gap-x-7 text-[15px] font-[500] bg-primary ring-1 ring-slate-900/5 rounded-full p-1"
+                            }`}
+                        onClick={() => setMenuOpened(false)}
+                    />
                 </div>
 
                 {/* Ícones */}
                 <div className="flex-1 flex items-center justify-end gap-x-4 xs:gap-x-16">
-                    {menuOpened ? (
-                        <span>Menu Aberto</span>
 
-                    ) : (
-                        <span>Menu Fechado</span>
-                    )}
 
                     {/* PROFILE */}
                     <button
                         className="group relative cursor-pointer flex"
+                        onClick={handleProfileClick}
                     >
                         <UserIcon color="#2d2926" />
                     </button>
@@ -75,6 +91,17 @@ const Header = () => {
                             {getCartCount}
                         </span>
                     </Link>
+
+                    {menuOpened ? (
+                        <button onClick={toggleMenu} className="xl:hidden cursor-pointer text-xl">
+                            <HamburgerOpenIcon />
+                        </button>
+
+                    ) : (
+                        <button onClick={toggleMenu} className="xl:hidden cursor-pointer text-xl">
+                            <HamburgerCloseIcon />
+                        </button>
+                    )}
                 </div>
             </div>
         </header>
