@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+// /app/auth/login/page.tsx
 'use client';
 
 import { toast } from 'react-toastify';
@@ -10,10 +11,10 @@ import Button from '@/components/ui/button';
 import { useState } from 'react';
 import GoogleIcon from '@/icons/google-icon';
 import FacebookIcon from '@/icons/facebook-icon';
+import LoginForm from '../../../components/login/login-form'
 
 export default function LoginPage() {
     const [isLoading, setIsLoading] = useState(false);
-
     const router = useRouter();
     const loginAction = useAuthStore((state) => state.login);
 
@@ -31,8 +32,7 @@ export default function LoginPage() {
         }
 
         try {
-            // Agora passamos o objeto validado 'validationResult.data' diretamente
-            setIsLoading(true); // <-- ESSENCIAL
+            setIsLoading(true);
             const { accessToken } = await authService.login(validationResult.data);
             loginAction(accessToken);
             toast.success('Login realizado com sucesso!');
@@ -40,6 +40,8 @@ export default function LoginPage() {
         } catch (err: any) {
             const errorMessage = err.response?.data?.[0]?.message || 'E-mail ou senha inválidos.';
             toast.error(errorMessage);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -50,73 +52,10 @@ export default function LoginPage() {
                     <span className="font-bold text-blue-primary">
                         Acesse sua conta
                     </span>
-                    <form onSubmit={handleSubmit} className="flex flex-col gap-4 max-w-md">
-                        <div className="flex flex-col w-full">
-                            <label
-                                htmlFor="email"
-                                className="mb-1 text-xs  font-medium text-blue-secondary"
-                            >
-                                Email
-                            </label>
-                            <input
-                                id="email"
-                                type="email" name="email" placeholder="E-mail" required
-                                className="p-2 rounded bg-[#F2F3F4] text-gray-primary"
-                            />
-                        </div>
-                        <div className="flex flex-col w-full">
-                            <label
-                                htmlFor="password"
-                                className="mb-1 text-xs font-medium text-blue-secondary"
-                            >
-                                Senha
-                            </label>
-                            <input
-                                id="password"
-                                type="password" name="password" placeholder="Senha (mín. 8 caracteres)" required
-                                className="p-2 rounded bg-[#F2F3F4] text-gray-primary"
-                            />
-                        </div>
-                        <div className='flex items-center justify-between'>
-                            <label className="flex items-center gap-2">
-                                <input
-                                    type="checkbox"
-                                    name="newsletterOptIn"
-                                    defaultChecked
-                                    className="accent-yellow-primary w-4 h-4"
-                                />
-                                <span className='text-gray-primary text-xs'>lembrar</span>
-                            </label>
-                            <a href="/auth/register" className='text-gray-secondary text-xs hover:text-yellow-primary'>esqueceu a senha?</a>
-                        </div>
-                        <Button type="submit" variant="secondary" fullWidth isLoading={isLoading}>
-                            Entrar
-                        </Button>
-                        <span className='text-gray-secondary text-xs text-center'>ou inscreva-se com</span>
-                        <div className='flex items-center gap-x-4 w-full'>
-                            <Button
-                                type="button"
-                                fullWidth
-                                iconLeft={<GoogleIcon />}
-                                // Usamos `className` para um estilo customizado que não está nas variantes padrão
-                                className="!bg-transparent border border-yellow-primary text-blue-primary hover:bg-yellow-50/50"
-                            >
-                                Google
-                            </Button>
-                            <Button
-                                type="button"
-                                fullWidth
-                                iconLeft={<FacebookIcon />}
-                                className="!bg-transparent border border-yellow-primary text-blue-primary hover:bg-yellow-50/50"
-                            >
-                                Facebook
-                            </Button>
-
-                        </div>
-                        <span className='text-gray-secondary text-center text-xs'>
-                            não tem conta? <a href="/auth/login" className='text-yellow-primary underline'>cadastre-se</a>
-                        </span>
-                    </form>
+                    <LoginForm
+                        onSubmit={handleSubmit}
+                        isLoading={isLoading}
+                    />
                 </div>
             </div>
         </div>

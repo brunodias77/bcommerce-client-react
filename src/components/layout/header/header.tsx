@@ -60,8 +60,8 @@ const Header = () => {
                 <div className="flex-1">
                     <Navbar
                         containerStyles={`${menuOpened
-                            ? "xl:hidden flex items-start flex-col gap-x-8 fixed top-16 right-6 py-5 px-5 bg-white rounded-xl shadow-md w-52 ring-1 ring-slate-900/5 z-50"
-                            : "hidden xl:flex items-center justify-around gap-x-5 xl:gap-x-7 text-[15px] font-[500] bg-primary ring-1 ring-slate-900/5 rounded-full p-1"
+                            ? "xl:hidden flex items-start flex-col gap-x-8 fixed top-16 right-6 py-5 px-5 bg-white rounded-xl shadow-md w-52  z-50"
+                            : "hidden xl:flex items-center justify-around  text-[15px] "
                             }`}
                         onClick={() => setMenuOpened(false)}
                     />
