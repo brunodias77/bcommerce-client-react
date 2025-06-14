@@ -10,16 +10,21 @@ import Button from '../ui/button';
 import { addressService } from '@/services/address-service';
 import { addressSchema } from '@/lib/schemas/address-schema';
 import { cepService } from '@/services/cep-service';
+import { Address } from '@/lib/definitions';
 
 interface ModalAddressProps {
     isOpen: boolean;
     onClose: () => void;
-    onAddressAdded: () => void; // Para atualizar a lista de endereços no pai
+    onSuccess: () => void; // Para atualizar a lista de endereços no pai
+    initialData?: Address | null; // ✅ 1. Prop para receber dados para edição
+
 }
 
-const ModalAddress: React.FC<ModalAddressProps> = ({ isOpen, onClose, onAddressAdded }) => {
+const ModalAddress: React.FC<ModalAddressProps> = ({ isOpen, onClose, onSuccess, initialData }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [errors, setErrors] = useState<Record<string, string>>({});
+    const isEditMode = !!initialData; // Define se estamos em modo de edição
+
 
     // ✅ 2. Crie um estado para controlar todos os campos do formulário
     const [formData, setFormData] = useState({
@@ -33,6 +38,24 @@ const ModalAddress: React.FC<ModalAddressProps> = ({ isOpen, onClose, onAddressA
         type: 'Shipping', // Valor padrão
         isDefault: false,
     });
+
+
+    // ✅  useEffect para preencher o formulário quando em modo de edição
+    useEffect(() => {
+        if (isEditMode) {
+            setFormData({
+                street: initialData.street,
+                number: initialData.number,
+                complement: initialData.complement || '',
+                neighborhood: initialData.neighborhood,
+                city: initialData.city,
+                stateCode: initialData.stateCode,
+                postalCode: initialData.postalCode,
+                type: initialData.type,
+                isDefault: initialData.isDefault,
+            });
+        }
+    }, [initialData, isEditMode]);
 
     // ✅ 3. Lógica para buscar o endereço quando o CEP mudar
     useEffect(() => {
@@ -81,7 +104,6 @@ const ModalAddress: React.FC<ModalAddressProps> = ({ isOpen, onClose, onAddressA
         setIsLoading(true);
         setErrors({});
 
-        // ✅ 5. Processa e valida os dados do ESTADO, não mais do FormData
         const processedData = {
             ...formData,
             postalCode: formData.postalCode.replace(/\D/g, ''),
@@ -91,19 +113,26 @@ const ModalAddress: React.FC<ModalAddressProps> = ({ isOpen, onClose, onAddressA
         const validationResult = addressSchema.safeParse(processedData);
 
         if (!validationResult.success) {
-            // Lógica de erro permanece a mesma
-            // ...
+            // ... (lógica de erro de validação)
             setIsLoading(false);
             return;
         }
 
         try {
-            await addressService.add(validationResult.data);
-            toast.success("Endereço cadastrado com sucesso!");
-            onAddressAdded();
-            onClose();
+            // ✅ 3. Lógica condicional para chamar add ou update
+            if (isEditMode) {
+                await addressService.update(initialData.id, validationResult.data);
+                toast.success("Endereço atualizado com sucesso!");
+            } else {
+                await addressService.add(validationResult.data);
+                toast.success("Endereço cadastrado com sucesso!");
+            }
+            onSuccess(); // Chama a função de sucesso para atualizar a lista
+            onClose(); // Fecha o modal
         } catch (error: any) {
-            // ...
+            const defaultMessage = isEditMode ? 'Falha ao atualizar endereço.' : 'Falha ao cadastrar endereço.';
+            const errorMessage = error.response?.data?.[0]?.message || defaultMessage;
+            toast.error(errorMessage);
         } finally {
             setIsLoading(false);
         }
@@ -112,8 +141,12 @@ const ModalAddress: React.FC<ModalAddressProps> = ({ isOpen, onClose, onAddressA
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white rounded-lg shadow-xl p-8 max-w-lg w-full">
-                {/* ... Título e botão de fechar ... */}
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-xl font-bold text-blue-primary">
+                        {isEditMode ? 'Editar Endereço' : 'Cadastrar Novo Endereço'}
+                    </h3>
+                    <button onClick={onClose}>&times;</button>
+                </div>                <form onSubmit={handleSubmit} className="space-y-4">
                     <Input id="postalCode" name="postalCode" label="CEP *" placeholder="Digite o CEP" maxLength={9} required
                         value={formData.postalCode} onChange={handleChange} error={errors.postalCode} />
 

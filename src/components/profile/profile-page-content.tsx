@@ -26,6 +26,16 @@ export const ProfilePageContent: React.FC = () => {
     const [addressToDelete, setAddressToDelete] = useState<Address | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
 
+    // ✅ 1. State para controlar o modal de edição
+    const [addressToEdit, setAddressToEdit] = useState<Address | null>(null);
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const [isUpdating, setIsUpdating] = useState(false);
+
+    // ✅ 2. Função para abrir o modal em modo de edição
+    const handleEditRequest = (address: Address) => {
+        setAddressToEdit(address);
+    };
+
     // ✅ Usamos useCallback para evitar recriar a função em cada renderização
     const fetchAddresses = useCallback(async () => {
         try {
@@ -45,13 +55,43 @@ export const ProfilePageContent: React.FC = () => {
     }, [fetchAddresses]);
 
     // ✅ Função para ser chamada pelo Modal, que dispara a atualização da lista
-    const handleAddressAdded = () => {
+    const handleSuccess = () => {
         fetchAddresses();
     };
 
     // ✅ 2. Função para abrir o modal de confirmação
     const handleDeleteRequest = (address: Address) => {
         setAddressToDelete(address);
+    };
+
+    const handleSetDefault = async (address: Address) => {
+        setIsUpdating(true);
+
+        // Prepara o payload para a API, convertendo o 'type' para número
+        const payload = {
+            ...address,
+            type: address.type === 'Shipping' ? 0 : 1, // Converte para o enum numérico
+            isDefault: true // Define como padrão
+        };
+
+        try {
+            await addressService.update(address.id, payload);
+            toast.success("Endereço padrão atualizado com sucesso!");
+
+            // ✅ 2. Atualiza o estado local para refletir a mudança instantaneamente
+            setAddresses(currentAddresses =>
+                currentAddresses.map(addr => ({
+                    ...addr,
+                    // O endereço clicado se torna o padrão, e todos os outros deixam de ser.
+                    isDefault: addr.id === address.id
+                }))
+            );
+
+        } catch (error) {
+            toast.error("Falha ao definir o endereço como padrão.");
+        } finally {
+            setIsUpdating(false);
+        }
     };
 
     // ✅ 3. Função para confirmar e executar a exclusão
@@ -127,7 +167,7 @@ export const ProfilePageContent: React.FC = () => {
                                 <p>Carregando endereços...</p>
                             ) : addresses.length > 0 ? (
                                 addresses.map(address => (
-                                    <CardAddress key={address.id} address={address} onDelete={handleDeleteRequest} />
+                                    <CardAddress key={address.id} address={address} onDelete={handleDeleteRequest} onEdit={handleEditRequest} onSetDefault={handleSetDefault} />
                                 ))
                             ) : (
                                 <p className='text-gray-500 text-center my-auto'>Nenhum endereço cadastrado.</p>
@@ -143,11 +183,15 @@ export const ProfilePageContent: React.FC = () => {
                 </div>
             </div>
 
-            <ModalAddress
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
-                onAddressAdded={handleAddressAdded}
-            />
+            {/* ✅ 3. O modal agora é renderizado de forma condicional */}
+            {(isAddModalOpen || addressToEdit) && (
+                <ModalAddress
+                    isOpen={true}
+                    onClose={() => setIsModalOpen(false)}
+                    onSuccess={handleSuccess}
+                    initialData={addressToEdit} // Passa os dados para edição
+                />
+            )}
 
             {/* ✅ 4. Renderiza o modal de confirmação */}
             <ConfirmationModal
