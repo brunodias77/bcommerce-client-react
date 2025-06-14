@@ -17,34 +17,41 @@ export default function AccountInfo() {
         {
             title: 'Meus Pedidos',
             description: 'Veja históricos e acompanhe suas compras.',
-            icon: <BagIcon color="#fec857" height={25} width={25} />
+            icon: <BagIcon color="#fec857" height={25} width={25} />,
+            href: '/account/orders'
         },
         {
             title: 'Meus Dados',
             description: 'Altere seus dados cadastrados, endereços ou cadastre um novo endereço.',
-            icon: <UserIcon color="#fec857" height={25} width={25} />
+            icon: <UserIcon color="#fec857" height={25} width={25} />,
+            href: '/account/profile'
         },
         {
             title: 'Carteira',
             description: 'Gerencie seus cartões, créditos e resgate gift card.',
-            icon: <CreditCardIcon color="#fec857" height={25} width={25} />
+            icon: <CreditCardIcon color="#fec857" height={25} width={25} />,
+            href: '/account/wallet'
         },
         {
             title: 'Protocolos',
             description: 'Aqui você encontra seus protocolos de atendimento.',
-            icon: <SupportIcon color="#fec857" height={25} width={25} />
+            icon: <SupportIcon color="#fec857" height={25} width={25} />,
+            href: '/account/protocols'
         },
         {
             title: 'Avaliacoes',
             description: 'Avalie suas compras e visualize suas avaliações e comentários.',
-            icon: <LikeIcon color="#fec857" height={25} width={25} />
+            icon: <LikeIcon color="#fec857" height={25} width={25} />,
+            href: '/account/reviews'
         },
         {
             title: 'Favoritos',
             description: 'Consulte sua lista de produtos favoritados.',
-            icon: <HeartIcon color="#fec857" height={25} width={25} />
+            icon: <HeartIcon color="#fec857" height={25} width={25} />,
+            href: '/account/favorites'
         }
     ];
+
     const user = useAuthStore((state) => state.user);
 
     if (!user) {
@@ -79,13 +86,14 @@ export default function AccountInfo() {
                     </div>
                 </Button>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-y-4 gap-x-8 mt-10">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-y-4 gap-x-8 mt-10 items-stretch">
                 {cards.map((card, index) => (
                     <AccountCard
                         key={index}
                         title={card.title}
                         description={card.description}
                         icon={card.icon}
+                        href={card.href}
                     />
                 ))}
             </div>

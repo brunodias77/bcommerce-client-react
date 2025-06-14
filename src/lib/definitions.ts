@@ -1,4 +1,3 @@
-// Baseado em AddressOutput.cs
 export interface Address {
   id: string;
   clientId: string;
@@ -11,4 +10,19 @@ export interface Address {
   city: string;
   stateCode: string;
   isDefault: boolean;
+}
+export interface Profile {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  emailVerified: Date | null;
+  phoneNumber: string;
+  newsletterOptIn: boolean;
+  createdAt: Date;
+}
+
+// Interface para a resposta da verificação de e-mail
+export interface VerifyEmailResponse {
+  message: string;
 }

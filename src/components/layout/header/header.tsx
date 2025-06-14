@@ -29,14 +29,6 @@ const Header = () => {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
-    const handleProfileClick = () => {
-        // Verifica se o usuário está autenticado
-        if (token && user) {
-            router.push("/account");
-        } else {
-            router.push("/auth/login");
-        }
-    };
 
     const toggleMenu = () => setMenuOpened((prev) => !prev);
     return (
@@ -72,12 +64,9 @@ const Header = () => {
 
 
                     {/* PROFILE */}
-                    <button
-                        className="group relative cursor-pointer flex"
-                        onClick={handleProfileClick}
-                    >
+                    <Link href="/account" className="flex relative">
                         <UserIcon color="#2d2926" />
-                    </button>
+                    </Link>
 
                     {/* FAVORITOS */}
                     <Link href="/favoritos" className="group relative cursor-pointer flex">
@@ -104,7 +93,7 @@ const Header = () => {
                     )}
                 </div>
             </div>
-        </header>
+        </header >
     );
 }
 export default Header;
