@@ -1,13 +1,12 @@
 //app/account/page.tsx
 
-import AccountInfo from "./account-info";
+import AccountInfo from "../../components/account/account-info";
 
 export default function AccountPage() {
 
 
     return (
-        <div>
-            Minha Conta
+        <div className=" h-full">
             <AccountInfo />
         </div>
     )
