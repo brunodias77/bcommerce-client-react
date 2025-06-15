@@ -146,7 +146,8 @@ const ModalAddress: React.FC<ModalAddressProps> = ({ isOpen, onClose, onSuccess,
                         {isEditMode ? 'Editar Endereço' : 'Cadastrar Novo Endereço'}
                     </h3>
                     <button onClick={onClose}>&times;</button>
-                </div>                <form onSubmit={handleSubmit} className="space-y-4">
+                </div>
+                <form onSubmit={handleSubmit} className="space-y-4">
                     <Input id="postalCode" name="postalCode" label="CEP *" placeholder="Digite o CEP" maxLength={9} required
                         value={formData.postalCode} onChange={handleChange} error={errors.postalCode} />
 
