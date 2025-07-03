@@ -22,5 +22,6 @@ export const loginSchema = z.object({
   password: z.string().min(1, { message: "A senha é obrigatória." }),
 });
 
-export type RegisterSchema = z.infer<typeof registerSchema>;
-export type LoginSchema = z.infer<typeof loginSchema>;
+// ✅ CORREÇÃO: Exportando os tipos inferidos para uso no serviço.
+export type RegisterPayload = z.infer<typeof registerSchema>;
+export type LoginPayload = z.infer<typeof loginSchema>;

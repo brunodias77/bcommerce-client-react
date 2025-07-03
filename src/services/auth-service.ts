@@ -1,19 +1,32 @@
 import { api } from "@/lib/api";
-import { LoginSchema, RegisterSchema } from "@/lib/schemas/auth-schema";
+// ✅ CORREÇÃO: Importando os tipos inferidos do schema.
+import { LoginPayload, RegisterPayload } from "@/lib/schemas/auth-schema";
 
+// A interface de resposta está correta, alinhada com o LoginClientOutput.cs do backend.
 export interface LoginResponse {
   accessToken: string;
   expiresAt: string;
-  // ✅ CORREÇÃO: O backend retorna também o refreshToken
   refreshToken: string;
 }
 
 class AuthService {
-  async register(data: RegisterSchema) {
-    return api.post("/clients/register", data);
+  /**
+   * Registra um novo cliente.
+   * Mapeia para: POST /clients/register
+   * @param data - Os dados do novo cliente, validados pelo registerSchema.
+   */
+  // ✅ CORREÇÃO: Usando o tipo 'RegisterPayload'.
+  async register(data: RegisterPayload): Promise<void> {
+    await api.post("/clients/register", data);
   }
 
-  async login(data: LoginSchema): Promise<LoginResponse> {
+  /**
+   * Autentica um cliente e retorna os tokens.
+   * Mapeia para: POST /clients/login
+   * @param data - As credenciais do cliente.
+   */
+  // ✅ CORREÇÃO: Usando o tipo 'LoginPayload'.
+  async login(data: LoginPayload): Promise<LoginResponse> {
     const { data: responseData } = await api.post<LoginResponse>(
       "/clients/login",
       data
