@@ -1,33 +1,78 @@
 import { create } from "zustand";
-import { createJSONStorage, persist } from "zustand/middleware";
+import { persist, createJSONStorage } from "zustand/middleware";
+import { Profile } from "@/lib/definitions";
 
-interface User {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-}
-
+/**
+ * =================================================================
+ * DEFINIÇÃO DO ESTADO E AÇÕES DA STORE DE AUTENTICAÇÃO
+ * =================================================================
+ */
 interface AuthState {
   token: string | null;
-  user: User | null;
-  login: (token: string) => void;
+  refreshToken: string | null;
+  user: Profile | null;
+  isAuthenticated: boolean;
+
+  // --- AÇÕES ---
+  login: (payload: { token: string; refreshToken: string }) => void;
   logout: () => void;
-  setUser: (user: User) => void;
+  setUser: (user: Profile | null) => void;
 }
 
+/**
+ * =================================================================
+ * CRIAÇÃO DA STORE ZUSTAND (`useAuthStore`)
+ * =================================================================
+ * Gerencia o estado de autenticação, persistindo os tokens no localStorage.
+ */
 export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
       token: null,
+      refreshToken: null,
       user: null,
-      login: (token: string) => set({ token }),
-      logout: () => set({ token: null, user: null }),
-      setUser: (user: User) => set({ user }),
+      isAuthenticated: false,
+
+      /**
+       * Define os tokens no estado após um login bem-sucedido.
+       */
+      login: (payload) => {
+        set({
+          token: payload.token,
+          refreshToken: payload.refreshToken,
+          isAuthenticated: true,
+        });
+      },
+
+      /**
+       * Limpa o estado de autenticação (tokens e usuário).
+       */
+      logout: () => {
+        set({
+          token: null,
+          refreshToken: null,
+          user: null,
+          isAuthenticated: false,
+        });
+      },
+
+      /**
+       * Define os dados do perfil do usuário no estado.
+       */
+      setUser: (user) => {
+        set({ user });
+      },
     }),
     {
+      // Configuração da persistência
       name: "auth-storage", // Nome da chave no localStorage
-      storage: createJSONStorage(() => localStorage), // Persistir no localStorage
+      storage: createJSONStorage(() => localStorage), // Usa localStorage
+      // Define quais partes do estado serão persistidas
+      partialize: (state) => ({
+        token: state.token,
+        refreshToken: state.refreshToken,
+        isAuthenticated: state.isAuthenticated,
+      }),
     }
   )
 );
