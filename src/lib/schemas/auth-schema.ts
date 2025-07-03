@@ -22,6 +22,5 @@ export const loginSchema = z.object({
   password: z.string().min(1, { message: "A senha é obrigatória." }),
 });
 
-// Tipos inferidos a partir dos schemas
 export type RegisterSchema = z.infer<typeof registerSchema>;
 export type LoginSchema = z.infer<typeof loginSchema>;

@@ -1,15 +1,19 @@
-// src/lib/schemas/address-schema.ts
 import { z } from "zod";
 
-export const addressSchema = z.object({
-  // ✅ Garanta que o tipo seja 'number'
-  type: z.number({ required_error: "O tipo é obrigatório." }).min(0).max(1),
+// ✅ CORREÇÃO: O backend espera os valores "Shipping" ou "Billing" como strings.
+const AddressTypeEnum = z.enum(["Shipping", "Billing"]);
 
-  // ✅ O resto do schema está correto
+export const addressSchema = z.object({
+  // O backend espera o Enum como string, não como número.
+  type: AddressTypeEnum,
   postalCode: z.string().length(8, { message: "O CEP deve ter 8 dígitos." }),
   street: z.string().min(1, { message: "A rua é obrigatória." }).max(150),
-  number: z.string().min(1, { message: "O número é obrigatório." }).max(20),
-  complement: z.string().max(100).optional(),
+  // ✅ CORREÇÃO: Renomeado de 'number' para 'streetNumber' para corresponder à API.
+  streetNumber: z
+    .string()
+    .min(1, { message: "O número é obrigatório." })
+    .max(20),
+  complement: z.string().max(100).optional().nullable(),
   neighborhood: z
     .string()
     .min(1, { message: "O bairro é obrigatório." })
