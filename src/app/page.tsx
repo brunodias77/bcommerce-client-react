@@ -2,6 +2,9 @@ import InfoCompanyPolicies from "@/components/account/info-company-policies";
 import { BannerHome } from "@/components/layout/banner";
 import Image from "next/image";
 import { ProductList } from '@/components/products/product-list';
+import Section from "@/components/ui/section";
+import Title from "@/components/ui/title";
+import { SectionNewProducts } from "@/components/products/section-new-products";
 
 
 export default function Home() {
@@ -9,16 +12,7 @@ export default function Home() {
     <>
       <BannerHome />
       <InfoCompanyPolicies />
-      <section aria-labelledby="products-heading">
-        <h2 id="products-heading" className="sr-only">
-          Produtos
-        </h2>
-
-        {/* O componente ProductList buscará e renderizará os produtos no servidor.
-          A página só será exibida no navegador com tudo já carregado.
-        */}
-        <ProductList />
-      </section>
+      <SectionNewProducts />
     </>
   );
 }

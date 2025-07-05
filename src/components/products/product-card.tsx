@@ -25,6 +25,7 @@ export function ProductCard({ product }: ProductCardProps) {
                 <div className="relative w-full h-[220px] overflow-hidden rounded-md">
                     <Image
                         src={product.coverImageUrl ?? "/placeholder.png"}
+                        // src="/assets/products/product-01.jpg"
                         alt={product.name}
                         fill
                         className="object-cover transition-transform duration-300 group-hover:scale-115"
@@ -63,35 +64,6 @@ export function ProductCard({ product }: ProductCardProps) {
                 </div>
             </div>
         </Link>
-        // <div className="group relative flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white">
-        //     <Link href={`/product/${product.slug}`} className="cursor-pointer">
-        //         <div className="aspect-w-3 aspect-h-4 bg-gray-200 sm:aspect-none sm:h-60">
-        //             <Image
-        //                 src={product.coverImageUrl ?? "/placeholder.png"}
-        //                 alt={product.name}
-        //                 width={300}
-        //                 height={400}
-        //                 className="h-full w-full object-cover object-center transition-transform duration-300 group-hover:scale-105 sm:h-full sm:w-full"
-        //             />
-        //         </div>
-        //     </Link>
-        //     <div className="flex flex-1 flex-col space-y-2 p-4">
-        //         <h3 className="text-sm font-medium text-gray-900">
-        //             <Link href={`/product/${product.slug}`}>
-        //                 {product.name}
-        //             </Link>
-        //         </h3>
-        //         <div className="flex flex-1 flex-col justify-end">
-        //             <p className="text-base font-semibold text-gray-900">
-        //                 {formatPrice({ amount: product.basePrice, currency: "BRL" })}
-        //             </p>
-        //         </div>
-        //     </div>
-        //     <div className="p-4 pt-0">
-        //         <Button className="w-full">
-        //             <CartIcon /> Adicionar ao Carrinho
-        //         </Button>
-        //     </div>
-        // </div>
+
     );
 }

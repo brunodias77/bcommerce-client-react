@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     description: 'Gerencie seu perfil no site Bcommerce',
 };
 
-export default function ProfilePage() {
+export default async function ProfilePage() {
     return (
         <div className=" h-full">
             <ProfilePageContent />
